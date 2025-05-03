@@ -1,4 +1,4 @@
-<!-- Clay'sCars.com - Starter Prototype (with JSON feed) -->
+<!-- Clay'sCars.com - Starter Prototype (with embedded JSON for sandbox) -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,8 +9,9 @@
     body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f4f4f4; }
     header { background: #0074D9; color: white; padding: 1rem; text-align: center; }
     .container { padding: 2rem; max-width: 800px; margin: auto; }
-    .search-box { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
-    input, button { padding: 0.5rem; font-size: 1rem; }
+    .search-box { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    label { font-weight: bold; margin-right: 0.5rem; }
+    select, button { padding: 0.5rem; font-size: 1rem; }
     button { background: #0074D9; color: white; border: none; cursor: pointer; }
     button:hover { background: #005fa3; }
     .car-card { background: white; padding: 1rem; margin-bottom: 1rem; box-shadow: 0 0 5px rgba(0,0,0,0.1); display: flex; gap: 1rem; align-items: center; }
@@ -21,30 +22,48 @@
 <body>
   <header>
     <h1>Clay'sCars.com</h1>
-    <p>Used Cars in Madison, Indiana</p>
+    <p>All Cars in Madison, Indiana</p>
   </header>
   <div class="container">
     <div class="search-box">
-      <input type="text" id="make" placeholder="Make (e.g. Ford)">
-      <input type="text" id="model" placeholder="Model (e.g. Mustang)">
-      <input type="text" id="year" placeholder="Year (e.g. 2004)">
+      <label for="make">Make:</label>
+      <select id="make"></select>
+      <label for="model">Model:</label>
+      <select id="model"></select>
+      <label for="year">Year:</label>
+      <select id="year"></select>
       <button onclick="searchCars()">Search</button>
     </div>
     <div id="results"></div>
   </div>
   <script>
-    let carInventory = [];
+    // Embedded inventory data (for sandbox use)
+    const carInventory = [
+      { make: "Ford", model: "F-150", year: "2019", dealer: "Madison Ford", image: "https://via.placeholder.com/100", link: "#", price: "$29,995" },
+      { make: "Toyota", model: "Camry", year: "2018", dealer: "Toyota of Madison", image: "https://via.placeholder.com/100", link: "#", price: "$18,500" },
+      { make: "Jeep", model: "Grand Cherokee", year: "2020", dealer: "Madison CDJR", image: "https://via.placeholder.com/100", link: "#", price: "$32,000" },
+      { make: "Chevrolet", model: "Equinox", year: "2017", dealer: "Chandler Select", image: "https://via.placeholder.com/100", link: "#", price: "$15,900" },
+      { make: "Hyundai", model: "Tucson", year: "2022", dealer: "Chandler Select", image: "https://via.placeholder.com/100", link: "#", price: "$24,800" }
+    ];
 
-    // Load combined inventory JSON data
-    fetch('madison_inventory_combined.json')
-      .then(response => response.json())
-      .then(data => {
-        carInventory = data;
-      })
-      .catch(error => {
-        console.error('Failed to load inventory:', error);
-        document.getElementById("results").innerHTML = '<p>Error loading inventory.</p>';
-      });
+    window.onload = function() {
+      populateDropdowns(carInventory);
+      displayCars(carInventory);
+    };
+
+    function populateDropdowns(data) {
+      const makes = [...new Set(data.map(car => car.make))];
+      const models = [...new Set(data.map(car => car.model))];
+      const years = [...new Set(data.map(car => car.year))].sort((a, b) => b - a);
+
+      const makeDropdown = document.getElementById("make");
+      const modelDropdown = document.getElementById("model");
+      const yearDropdown = document.getElementById("year");
+
+      makeDropdown.innerHTML = '<option value="">All Makes</option>' + makes.map(m => `<option value="${m}">${m}</option>`).join("");
+      modelDropdown.innerHTML = '<option value="">All Models</option>' + models.map(m => `<option value="${m}">${m}</option>`).join("");
+      yearDropdown.innerHTML = '<option value="">All Years</option>' + years.map(y => `<option value="${y}">${y}</option>`).join("");
+    }
 
     function searchCars() {
       const make = document.getElementById("make").value.toLowerCase();
@@ -52,20 +71,24 @@
       const year = document.getElementById("year").value;
 
       const filtered = carInventory.filter(car =>
-        car.make.toLowerCase().includes(make) &&
-        car.model.toLowerCase().includes(model) &&
-        car.year.includes(year)
+        (make === "" || car.make.toLowerCase() === make) &&
+        (model === "" || car.model.toLowerCase() === model) &&
+        (year === "" || car.year === year)
       );
 
+      displayCars(filtered);
+    }
+
+    function displayCars(cars) {
       const resultsDiv = document.getElementById("results");
       resultsDiv.innerHTML = "";
 
-      if (filtered.length === 0) {
+      if (cars.length === 0) {
         resultsDiv.innerHTML = "<p>No cars found matching your criteria in Madison, IN.</p>";
         return;
       }
 
-      filtered.forEach(car => {
+      cars.forEach(car => {
         const card = document.createElement("div");
         card.className = "car-card";
         card.innerHTML = `
@@ -73,6 +96,7 @@
           <div class="car-details">
             <h3>${car.year} ${car.make} ${car.model}</h3>
             <p>Dealer: ${car.dealer}</p>
+            <p>Price: ${car.price}</p>
             <a href="${car.link}" target="_blank">View at Dealer</a>
           </div>
         `;
