@@ -1,0 +1,84 @@
+<!-- Clay'sCars.com - Starter Prototype (with JSON feed) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clay'sCars.com - Madison, IN</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f4f4f4; }
+    header { background: #0074D9; color: white; padding: 1rem; text-align: center; }
+    .container { padding: 2rem; max-width: 800px; margin: auto; }
+    .search-box { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+    input, button { padding: 0.5rem; font-size: 1rem; }
+    button { background: #0074D9; color: white; border: none; cursor: pointer; }
+    button:hover { background: #005fa3; }
+    .car-card { background: white; padding: 1rem; margin-bottom: 1rem; box-shadow: 0 0 5px rgba(0,0,0,0.1); display: flex; gap: 1rem; align-items: center; }
+    .car-card img { width: 100px; height: auto; border-radius: 4px; }
+    .car-details { flex: 1; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Clay'sCars.com</h1>
+    <p>Used Cars in Madison, Indiana</p>
+  </header>
+  <div class="container">
+    <div class="search-box">
+      <input type="text" id="make" placeholder="Make (e.g. Ford)">
+      <input type="text" id="model" placeholder="Model (e.g. Mustang)">
+      <input type="text" id="year" placeholder="Year (e.g. 2004)">
+      <button onclick="searchCars()">Search</button>
+    </div>
+    <div id="results"></div>
+  </div>
+  <script>
+    let carInventory = [];
+
+    // Load combined inventory JSON data
+    fetch('madison_inventory_combined.json')
+      .then(response => response.json())
+      .then(data => {
+        carInventory = data;
+      })
+      .catch(error => {
+        console.error('Failed to load inventory:', error);
+        document.getElementById("results").innerHTML = '<p>Error loading inventory.</p>';
+      });
+
+    function searchCars() {
+      const make = document.getElementById("make").value.toLowerCase();
+      const model = document.getElementById("model").value.toLowerCase();
+      const year = document.getElementById("year").value;
+
+      const filtered = carInventory.filter(car =>
+        car.make.toLowerCase().includes(make) &&
+        car.model.toLowerCase().includes(model) &&
+        car.year.includes(year)
+      );
+
+      const resultsDiv = document.getElementById("results");
+      resultsDiv.innerHTML = "";
+
+      if (filtered.length === 0) {
+        resultsDiv.innerHTML = "<p>No cars found matching your criteria in Madison, IN.</p>";
+        return;
+      }
+
+      filtered.forEach(car => {
+        const card = document.createElement("div");
+        card.className = "car-card";
+        card.innerHTML = `
+          <img src="${car.image}" alt="Car">
+          <div class="car-details">
+            <h3>${car.year} ${car.make} ${car.model}</h3>
+            <p>Dealer: ${car.dealer}</p>
+            <a href="${car.link}" target="_blank">View at Dealer</a>
+          </div>
+        `;
+        resultsDiv.appendChild(card);
+      });
+    }
+  </script>
+</body>
+</html>
