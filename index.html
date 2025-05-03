@@ -1,4 +1,4 @@
-<!-- Clay'sCars.com - Starter Prototype (with embedded JSON for sandbox) -->
+<!-- Clay'sCars.com - Starter Prototype (simple result view) -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,9 +14,10 @@
     select, button { padding: 0.5rem; font-size: 1rem; }
     button { background: #0074D9; color: white; border: none; cursor: pointer; }
     button:hover { background: #005fa3; }
-    .car-card { background: white; padding: 1rem; margin-bottom: 1rem; box-shadow: 0 0 5px rgba(0,0,0,0.1); display: flex; gap: 1rem; align-items: center; }
-    .car-card img { width: 120px; height: auto; border-radius: 4px; object-fit: cover; }
-    .car-details { flex: 1; }
+    .car-result { background: white; padding: 1rem; margin-bottom: 1rem; border-left: 4px solid #0074D9; }
+    .car-result h3 { margin: 0 0 0.5rem 0; font-size: 1.2rem; }
+    .car-result a { text-decoration: none; color: #0074D9; }
+    .car-result a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -37,14 +38,12 @@
     <div id="results"></div>
   </div>
   <script>
-    const placeholderImage = "https://via.placeholder.com/120x80?text=No+Image";
-
     const carInventory = [
-      { make: "Ford", model: "F-150", year: "2019", dealer: "Madison Ford", image: placeholderImage, link: "#", price: "$29,995" },
-      { make: "Toyota", model: "Camry", year: "2018", dealer: "Toyota of Madison", image: placeholderImage, link: "#", price: "$18,500" },
-      { make: "Jeep", model: "Grand Cherokee", year: "2020", dealer: "Madison CDJR", image: placeholderImage, link: "#", price: "$32,000" },
-      { make: "Chevrolet", model: "Equinox", year: "2017", dealer: "Chandler Select", image: placeholderImage, link: "#", price: "$15,900" },
-      { make: "Hyundai", model: "Tucson", year: "2022", dealer: "Chandler Select", image: placeholderImage, link: "#", price: "$24,800" }
+      { make: "Ford", model: "F-150", year: "2019", dealer: "Madison Ford", link: "https://www.madisonfordin.com/used-vehicles/", price: "$29,995" },
+      { make: "Toyota", model: "Camry", year: "2018", dealer: "Toyota of Madison", link: "https://www.toyotaofmadison.net/used-cars-madison-indiana.html", price: "$18,500" },
+      { make: "Jeep", model: "Grand Cherokee", year: "2020", dealer: "Madison CDJR", link: "https://www.madisoncdjr.com/used-vehicles/", price: "$32,000" },
+      { make: "Chevrolet", model: "Equinox", year: "2017", dealer: "Chandler Select", link: "https://www.chandlerselect.com/newandusedcars", price: "$15,900" },
+      { make: "Hyundai", model: "Tucson", year: "2022", dealer: "Chandler Select", link: "https://www.chandlerselect.com/newandusedcars", price: "$24,800" }
     ];
 
     window.onload = function() {
@@ -86,18 +85,13 @@
       }
 
       cars.forEach(car => {
-        const card = document.createElement("div");
-        card.className = "car-card";
-        card.innerHTML = `
-          <img src="${car.image}" alt="Car">
-          <div class="car-details">
-            <h3>${car.year} ${car.make} ${car.model}</h3>
-            <p>Dealer: ${car.dealer}</p>
-            <p>Price: ${car.price}</p>
-            <a href="${car.link}" target="_blank">View at Dealer</a>
-          </div>
+        const div = document.createElement("div");
+        div.className = "car-result";
+        div.innerHTML = `
+          <h3><a href="${car.link}" target="_blank">${car.year} ${car.make} ${car.model}</a></h3>
+          <p>${car.price} — ${car.dealer}</p>
         `;
-        resultsDiv.appendChild(card);
+        resultsDiv.appendChild(div);
       });
     }
   </script>
