@@ -15,7 +15,7 @@
     button { background: #0074D9; color: white; border: none; cursor: pointer; }
     button:hover { background: #005fa3; }
     .car-card { background: white; padding: 1rem; margin-bottom: 1rem; box-shadow: 0 0 5px rgba(0,0,0,0.1); display: flex; gap: 1rem; align-items: center; }
-    .car-card img { width: 100px; height: auto; border-radius: 4px; }
+    .car-card img { width: 120px; height: auto; border-radius: 4px; object-fit: cover; }
     .car-details { flex: 1; }
   </style>
 </head>
@@ -37,13 +37,12 @@
     <div id="results"></div>
   </div>
   <script>
-    // Embedded inventory data (for sandbox use)
     const carInventory = [
-      { make: "Ford", model: "F-150", year: "2019", dealer: "Madison Ford", image: "https://via.placeholder.com/100", link: "#", price: "$29,995" },
-      { make: "Toyota", model: "Camry", year: "2018", dealer: "Toyota of Madison", image: "https://via.placeholder.com/100", link: "#", price: "$18,500" },
-      { make: "Jeep", model: "Grand Cherokee", year: "2020", dealer: "Madison CDJR", image: "https://via.placeholder.com/100", link: "#", price: "$32,000" },
-      { make: "Chevrolet", model: "Equinox", year: "2017", dealer: "Chandler Select", image: "https://via.placeholder.com/100", link: "#", price: "$15,900" },
-      { make: "Hyundai", model: "Tucson", year: "2022", dealer: "Chandler Select", image: "https://via.placeholder.com/100", link: "#", price: "$24,800" }
+      { make: "Ford", model: "F-150", year: "2019", dealer: "Madison Ford", image: "https://www.madisonfordin.com/assets/stock/ColorMatched_640x480/White_1/ffbff5a43a45432697be88de0f6791a6.jpg", link: "#", price: "$29,995" },
+      { make: "Toyota", model: "Camry", year: "2018", dealer: "Toyota of Madison", image: "https://www.toyota.com/imgix/content/dam/toyota/jellies/max/2023/camry/xle/2540/1j9/1.png", link: "#", price: "$18,500" },
+      { make: "Jeep", model: "Grand Cherokee", year: "2020", dealer: "Madison CDJR", image: "https://media.stellantisnorthamerica.com/images/2020-Jeep-Grand-Cherokee-Limited-X-1.jpg", link: "#", price: "$32,000" },
+      { make: "Chevrolet", model: "Equinox", year: "2017", dealer: "Chandler Select", image: "https://platform.cstatic-images.com/in/v2/stock_photos/4bfe60d1-5c09-4418-bfd1-0e6a3347b190/848168cb-4be0-4667-a93b-3303f18495b6.png", link: "#", price: "$15,900" },
+      { make: "Hyundai", model: "Tucson", year: "2022", dealer: "Chandler Select", image: "https://cdn.motor1.com/images/mgl/jAApZ/s3/2022-hyundai-tucson.jpg", link: "#", price: "$24,800" }
     ];
 
     window.onload = function() {
@@ -56,13 +55,9 @@
       const models = [...new Set(data.map(car => car.model))];
       const years = [...new Set(data.map(car => car.year))].sort((a, b) => b - a);
 
-      const makeDropdown = document.getElementById("make");
-      const modelDropdown = document.getElementById("model");
-      const yearDropdown = document.getElementById("year");
-
-      makeDropdown.innerHTML = '<option value="">All Makes</option>' + makes.map(m => `<option value="${m}">${m}</option>`).join("");
-      modelDropdown.innerHTML = '<option value="">All Models</option>' + models.map(m => `<option value="${m}">${m}</option>`).join("");
-      yearDropdown.innerHTML = '<option value="">All Years</option>' + years.map(y => `<option value="${y}">${y}</option>`).join("");
+      document.getElementById("make").innerHTML = '<option value="">All Makes</option>' + makes.map(m => `<option value="${m}">${m}</option>`).join("");
+      document.getElementById("model").innerHTML = '<option value="">All Models</option>' + models.map(m => `<option value="${m}">${m}</option>`).join("");
+      document.getElementById("year").innerHTML = '<option value="">All Years</option>' + years.map(y => `<option value="${y}">${y}</option>`).join("");
     }
 
     function searchCars() {
@@ -106,3 +101,4 @@
   </script>
 </body>
 </html>
+
